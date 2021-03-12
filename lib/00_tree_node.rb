@@ -8,16 +8,16 @@ class PolyTreeNode
         @test = "hello"
     end
 
-    def inspector
-        if @children.length == 0
-            return "<PolyTreeNode @value=#{value}, @children=[]"
-        else
-            returnval = "<PolyTreeNode @value=#{value}, @children="
-            @children.each do |child|
-                return returnval += "#{child.inspect}"
-            end
-        end
-    end
+    # def inspect
+    #     if @children.length == 0
+    #         return "<PolyTreeNode @value=#{value}, @children=[]"
+    #     else
+    #         returnval = "<PolyTreeNode @value=#{value}, @children="
+    #         @children.each do |child|
+    #             return returnval += "#{child.inspect}"
+    #         end
+    #     end
+    # end
 
     def parent=(parentnode)
 
@@ -44,7 +44,52 @@ class PolyTreeNode
         end
     end
 
-    
-    
+    def add_child(new_child)
+        new_child.parent = self
+    end
 
+    def remove_child(child_to_remove)
+        if @children.include?(child_to_remove)
+            child_to_remove.parent = nil
+        else
+            raise 'not a child'
+        end
+    end
+
+    def dfs(target_value)
+        #node.dfs(target_value)
+        # if @value != self && children == []
+        #     return nil
+        # if @value != self && children.length == 0
+        #     return nil
+        # end
+        
+        if self.value == target_value
+            return self
+        else
+            @children.each do |child|
+                search = child.dfs(target_value)
+                return search if search != nil
+            end
+        end
+        nil
+    end
+
+    def bfs(target_value)
+
+        queue = []
+        queue.push(self)
+
+        while queue != []
+            current_node = queue.shift
+            if current_node.value == target_value
+                return current_node
+            else
+                current_node.children.each { |child| queue << child }
+            end
+        end
+        nil
+            
+    end
 end
+
